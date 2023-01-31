@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 const WeatherDisplay = (props) => {
 
     const iconAPIurl = `http://openweathermap.org/img/w/${props.weather.weatherIcon}.png`
