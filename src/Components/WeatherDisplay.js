@@ -5,6 +5,11 @@ const WeatherDisplay = (props) => {
     const iconAPIurl = `http://openweathermap.org/img/w/${props.weather.weatherIcon}.png`
 
     return (
+
+        // <div className='helloCard'>
+        //     <h1> hello</h1>
+        // </div>
+
         <div>
             {
           props.error ? 

@@ -39,7 +39,7 @@ const WeatherInfo = () => {
   }
   
   //api with city name
-  const weatherAPIurl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&units=imperial&appid=${process.env.REACT_APP_WEATHER_TOKEN}`
+  const weatherAPIurl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=imperial&appid=${process.env.REACT_APP_WEATHER_TOKEN}`
 
   const getWeather = () => {
     axios.get(weatherAPIurl) 
@@ -88,27 +88,27 @@ const WeatherInfo = () => {
             Promise.all([
               firstRes,
               //make get weather request by using city name that was converted from long/lat
-              axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${firstRes.data.features[0].properties.city}&units=imperial&appid=${process.env.REACT_APP_WEATHER_TOKEN}`),
+              axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${firstRes.data.features[0].properties.city}&units=imperial&appid=${process.env.REACT_APP_WEATHER_TOKEN}`),
               axios.get(`https://api.timezonedb.com/v2.1/get-time-zone?key=J4CW56V87PEA&format=json&by=position&lat=${position.coords.latitude}&lng=${position.coords.longitude}`),
             ])   
         )
         .then(
         ([firstRes, secondRes, thirdRes]) => {
           console.log('2ndrest', secondRes.data)
-          // setWeather({...weather, 
-          //   cityName: secondRes.data.name,
-          //   country: secondRes.data.sys.country,
-          //   weather: secondRes.data.weather[0].main,
-          //   description: secondRes.data.weather[0].description,
-          //   temperature: secondRes.data.main.temp,
-          //   temperature_max: secondRes.data.main.temp_max,
-          //   temperature_min: secondRes.data.main.temp_min,
-          //   weatherIcon: secondRes.data.weather[0].icon,
-          //   lon: secondRes.data.coord.lon,
-          //   lat: secondRes.data.coord.lat,
-          //   stateName: firstRes.data.features[0].properties.state,
-          //   time: moment().tz(`${thirdRes.data.zoneName}`).format('MMMM Do YYYY, h:mm a')
-          // })
+          setWeather({...weather, 
+            cityName: secondRes.data.name,
+            country: secondRes.data.sys.country,
+            weather: secondRes.data.weather[0].main,
+            description: secondRes.data.weather[0].description,
+            temperature: secondRes.data.main.temp,
+            temperature_max: secondRes.data.main.temp_max,
+            temperature_min: secondRes.data.main.temp_min,
+            weatherIcon: secondRes.data.weather[0].icon,
+            lon: secondRes.data.coord.lon,
+            lat: secondRes.data.coord.lat,
+            stateName: firstRes.data.features[0].properties.state,
+            time: moment().tz(`${thirdRes.data.zoneName}`).format('MMMM Do YYYY, h:mm a')
+          })
           setError('')
         })
        .catch(error => {
@@ -121,18 +121,17 @@ const WeatherInfo = () => {
   }
 
     return (
-      <div>
 
-      <div className="container">
+<div className='container'>
+
+      <div className="inputBox">
           <form >
             <input type="text" name="City" value={cityInput} placeholder="Search for a city" onChange={handleChange} />
             <FontAwesomeIcon className="searchbtn" icon={faSearch} onClick={handleSubmit}/>
             <FontAwesomeIcon style={{color: 'blue'}} className="searchbtn" icon={faLocationArrow} onClick={getLocation}/>
           </form>
+</div>
           <WeatherDisplay weather={weather} error={error} geoLocationStatus={geoLocationStatus}/>
-      </div>
-          {/* <BgVideo weather={weather} /> */}
-
       </div>
     )
 }
