@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import 'moment-timezone'
+// import BgVideo from './BgVideo'
 
 const initialWeather = [{
   cityName: '',
@@ -37,13 +38,15 @@ const WeatherInfo = () => {
     getWeather()
   }
   
-  const weatherAPIurl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=imperial&appid=${process.env.REACT_APP_WEATHER_TOKEN}`
+  //api with city name
+  const weatherAPIurl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&units=imperial&appid=${process.env.REACT_APP_WEATHER_TOKEN}`
 
   const getWeather = () => {
     axios.get(weatherAPIurl) 
     .then((responseA) =>
         Promise.all([
           responseA,
+          //2nd get is to get lat/long of city name
           axios.get(`https://api.geoapify.com/v1/geocode/reverse?lat=${responseA.data.coord.lat}&lon=${responseA.data.coord.lon}&apiKey=${process.env.REACT_APP_GEOCODING_TOKEN}`),
           axios.get(`https://api.timezonedb.com/v2.1/get-time-zone?key=J4CW56V87PEA&format=json&by=position&lat=${responseA.data.coord.lat}&lng=${responseA.data.coord.lon}`),
         ])   
@@ -79,31 +82,33 @@ const WeatherInfo = () => {
       setGeoLocationStatus('Locating...');
       navigator.geolocation.getCurrentPosition((position) => {
         setGeoLocationStatus(null);
-
+        //get coordinates after clicking location
         axios.get(`https://api.geoapify.com/v1/geocode/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&apiKey=${process.env.REACT_APP_GEOCODING_TOKEN}`) 
         .then((firstRes) =>
             Promise.all([
               firstRes,
-              axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${firstRes.data.features[0].properties.city}&units=imperial&appid=${process.env.REACT_APP_WEATHER_TOKEN}`),
+              //make get weather request by using city name that was converted from long/lat
+              axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${firstRes.data.features[0].properties.city}&units=imperial&appid=${process.env.REACT_APP_WEATHER_TOKEN}`),
               axios.get(`https://api.timezonedb.com/v2.1/get-time-zone?key=J4CW56V87PEA&format=json&by=position&lat=${position.coords.latitude}&lng=${position.coords.longitude}`),
             ])   
         )
         .then(
         ([firstRes, secondRes, thirdRes]) => {
-          setWeather({...weather, 
-            cityName: secondRes.data.name,
-            country: secondRes.data.sys.country,
-            weather: secondRes.data.weather[0].main,
-            description: secondRes.data.weather[0].description,
-            temperature: secondRes.data.main.temp,
-            temperature_max: secondRes.data.main.temp_max,
-            temperature_min: secondRes.data.main.temp_min,
-            weatherIcon: secondRes.data.weather[0].icon,
-            lon: secondRes.data.coord.lon,
-            lat: secondRes.data.coord.lat,
-            stateName: firstRes.data.features[0].properties.state,
-            time: moment().tz(`${thirdRes.data.zoneName}`).format('MMMM Do YYYY, h:mm a')
-          })
+          console.log('2ndrest', secondRes.data)
+          // setWeather({...weather, 
+          //   cityName: secondRes.data.name,
+          //   country: secondRes.data.sys.country,
+          //   weather: secondRes.data.weather[0].main,
+          //   description: secondRes.data.weather[0].description,
+          //   temperature: secondRes.data.main.temp,
+          //   temperature_max: secondRes.data.main.temp_max,
+          //   temperature_min: secondRes.data.main.temp_min,
+          //   weatherIcon: secondRes.data.weather[0].icon,
+          //   lon: secondRes.data.coord.lon,
+          //   lat: secondRes.data.coord.lat,
+          //   stateName: firstRes.data.features[0].properties.state,
+          //   time: moment().tz(`${thirdRes.data.zoneName}`).format('MMMM Do YYYY, h:mm a')
+          // })
           setError('')
         })
        .catch(error => {
@@ -126,6 +131,7 @@ const WeatherInfo = () => {
           </form>
           <WeatherDisplay weather={weather} error={error} geoLocationStatus={geoLocationStatus}/>
       </div>
+          {/* <BgVideo weather={weather} /> */}
 
       </div>
     )
