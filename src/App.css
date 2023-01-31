@@ -127,27 +127,14 @@ table {
 
 /* CSS RESET */
 
-.videoContainer {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  mix-blend-mode: color;
-}
-
-#background-video {
-  object-fit: fill;
-  width: 100vw;
-  height: 100vh;
-}
 
 * {
   font-family: "Varela", sans-serif;
 }
 body {
   font-family: "Varela", sans-serif;
+  color: black;
+  background-color: red;
 }
 
 .App {
@@ -156,6 +143,7 @@ body {
   display: flex;
   justify-content: center;
   margin-right: 46.5%;
+  /* background-color: yellow; */
 }
 
 .container {

@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faLocationArrow } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import 'moment-timezone'
-// import BgVideo from './BgVideo'
 
 const initialWeather = [{
   cityName: '',
@@ -127,7 +126,6 @@ const WeatherInfo = () => {
           </form>
           <WeatherDisplay weather={weather} error={error} geoLocationStatus={geoLocationStatus}/>
       </div>
-          {/* <BgVideo weather={weather} /> */}
 
       </div>
     )
